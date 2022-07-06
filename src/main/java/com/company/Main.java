@@ -11,6 +11,13 @@ public class Main {
         String st1=in.next();
         String st=in.next();
         String st2=in.next();
+        String result=  calculate(st1,st,st2);
+
+        System.out.print(result);
+    }
+
+    public static String calculate(String st1, String st, String st2) {
+
         String []parts=st1.split("/");
         String []parts1=st2.split("/");
 
@@ -18,20 +25,20 @@ public class Main {
         int  b1,b2;
         a1=Integer.parseInt(parts[0]);
         if(parts.length==2)
-        a2=Integer.parseInt((parts[1]));
+            a2=Integer.parseInt((parts[1]));
         else
             a2=1;
+
         b1=Integer.parseInt((parts1[0]));
         if(parts1.length==2)
-        b2=Integer.parseInt((parts1[1]));
+            b2=Integer.parseInt((parts1[1]));
         else
             b2=1;
 
         if(b2==0||a2==0)
-            System.out.print("Деление на 0");
+            return("Деление на 0");
         else {
-            int help_a=a1,help_b=a2,gcd;
-
+            int help_a=abs(a1),help_b=a2,gcd;
             if(a1!=0) {
                 while (help_a % help_b != 0 && help_b % help_a != 0) {
                     if (help_a > help_b)
@@ -44,7 +51,7 @@ public class Main {
                 a2 = a2 / gcd;
             }
             if(b1!=0) {
-                help_a = b1;
+                help_a = abs(b1);
                 help_b = b2;
                 while (help_a % help_b != 0 && help_b % help_a != 0) {
                     if (help_a > help_b)
@@ -57,12 +64,12 @@ public class Main {
                 b2 = b2 / gcd;
             }
 
-
+            String result;
 
             switch (st) {
                 case ("+"): {
-                    help_a=b2;
-                    help_b=a2;
+                    help_a=abs(b2);
+                    help_b=abs(a2);
                     while(help_a%help_b!=0&&help_b%help_a!=0){
                         if(help_a>help_b)
                             help_a=help_a%help_b;
@@ -73,22 +80,19 @@ public class Main {
                     int new_a=(a1*b2)/gcd+(b1*a2)/gcd;
                     int new_b=a2*b2/gcd;
                     if(new_a!=0){
-                    help_a=new_a;
-                    help_b=new_b;
-                    while(help_a%help_b!=0&&help_b%help_a!=0){
-                        if(help_a>help_b)
-                            help_a=help_a%help_b;
-                        else
-                            help_b=help_b%help_a;
-                    }
-                    gcd=min(help_b,help_a);}
-
-                    System.out.print(new_a/gcd);
-                    if(new_b/gcd!=1){
-                    System.out.print('/');
-                    System.out.print(new_b/gcd);
-                    }
-                    break;
+                        help_a=abs(new_a);
+                        help_b=abs(new_b);
+                        while(help_a%help_b!=0&&help_b%help_a!=0){
+                            if(help_a>help_b)
+                                help_a=help_a%help_b;
+                            else
+                                help_b=help_b%help_a;
+                        }
+                        gcd=min(help_b,help_a);}
+                    result=String.valueOf(new_a/gcd);
+                    if(new_b/gcd!=1)
+                        result=result+'/'+String.valueOf(new_b/gcd);
+                    return result;
                 }
                 case ("-"): {
 
@@ -116,16 +120,17 @@ public class Main {
                         }
                         gcd = min(help_b, help_a);
                     }
-                    System.out.print(new_a/gcd);
+                    result=String.valueOf(new_a/gcd);
                     if(new_b/gcd!=1){
-                        System.out.print('/');
-                        System.out.print(new_b/gcd);
+                        result=result+'/'+String.valueOf(new_b/gcd);
+
                     }
-                    break;
+                    return result;
                 }
                 case ("*"): {
-                    int help_a1=a1,help_b1=b2,gcd1;
-                    int help_a2=b1,help_b2=a2,gcd2;
+
+                    int help_a1=abs(a1),help_b1=b2,gcd1;
+                    int help_a2=abs(b1),help_b2=a2,gcd2;
                     while(help_a1%help_b1!=0&&help_b1%help_a1!=0){
                         if(help_a1>help_b1)
                             help_a1=help_a1%help_b1;
@@ -134,54 +139,59 @@ public class Main {
                     }
                     gcd1=min(help_b1,help_a1);
 
-
-
-
                     while(help_a2%help_b2!=0&&help_b2%help_a2!=0){
                         if(help_a2>help_b2)
                             help_a2=help_a2%help_b2;
                         else
                             help_b2=help_b2%help_a2;
-                    }gcd2=min(help_b2,help_a2);
-
-                    System.out.print((a1*b1)/gcd1/gcd2);
-                    if(a2*b2/gcd1/gcd2!=1){
-                        System.out.print('/');
-                        System.out.print(a2*b2/gcd1/gcd2);
                     }
-                    break;
+                    gcd2=min(help_b2,help_a2);
+
+                    result=String.valueOf((a1*b1)/gcd1/gcd2);
+                    if(a2*b2/gcd1/gcd2!=1){
+                        result=result+'/'+String.valueOf(a2*b2/gcd1/gcd2);
+                    }
+                    return result;
+
                 }
                 case ("/"): {
-                        if(b1==0)
-                            System.out.print("Деление на 0");
-                        else
-                        {
-                            int help_a1=a1,help_b1=b1,gcd1;
-                            int help_a2=b2,help_b2=a2,gcd2;
-                            while(help_a1%help_b1!=0&&help_b1%help_a1!=0){
-                                if(help_a1>help_b1)
-                                    help_a1=help_a1%help_b1;
-                                else
-                                    help_b1=help_b1%help_a1;
-                            }
-                            gcd1=min(help_b1,help_a1);
-                            while(help_a2%help_b2!=0&&help_b2%help_a2!=0){
-                                if(help_a2>help_b2)
-                                    help_a2=help_a2%help_b2;
-                                else
-                                    help_b2=help_b2%help_a2;
-                            }gcd2=min(help_b2,help_a2);
-                            System.out.print((a1*b2)/gcd1/gcd2);
-                            if(a2*b1/gcd1/gcd2!=0){
-                                System.out.print('/');
-                                System.out.print(a2*b1/gcd1/gcd2);
-                            }
-
+                    if(b1==0)
+                        return("Деление на 0");
+                    else
+                    {
+                        int help_a1=abs(a1),help_b1=abs(b1),gcd1;
+                        int help_a2=b2,help_b2=a2,gcd2;
+                        while(help_a1%help_b1!=0&&help_b1%help_a1!=0){
+                            if(help_a1>help_b1)
+                                help_a1=help_a1%help_b1;
+                            else
+                                help_b1=help_b1%help_a1;
                         }
-                    break;
+                        gcd1=min(help_b1,help_a1);
+                        while(help_a2%help_b2!=0&&help_b2%help_a2!=0){
+                            if(help_a2>help_b2)
+                                help_a2=help_a2%help_b2;
+                            else
+                                help_b2=help_b2%help_a2;
+                        }gcd2=min(help_b2,help_a2);
+
+                        result=String.valueOf((a1*b2)/gcd1/gcd2);
+
+                        if(a2*b1/gcd1/gcd2!=1){
+                            result=result+'/'+String.valueOf(a2*b1/gcd1/gcd2);
+                        }
+                        return result;
+                    }
                 }
             }
-
         }
+        return "     ";
     }
 }
+
+/*
+ class calculatortest{
+ @test
+ void addition(){
+ assertEquals("2",calc("1","+","1"));
+ }*/
