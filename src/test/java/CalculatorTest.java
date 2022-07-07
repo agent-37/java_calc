@@ -46,7 +46,6 @@ public class CalculatorTest {
         String actual= Main.calculate("-2","*","2/5");
         assertEquals("-4/5",actual);
     }
-
     @Test
     void delet(){
         String actual= Main.calculate("2/7","/","2/5");
