@@ -1,6 +1,9 @@
 import com.company.Node;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,5 +68,37 @@ public class NodeTest {
         root.add(child2);
         root.change_child(child.getId(),"123");
         assertEquals(true,root.findChildren(("123")));
+    }
+    @Test
+    void checkPrint(){
+        Node root=new Node("Корень");
+        Node child = new Node("Лист1");
+        Node child1 = new Node("Лист2");
+        Node child2 = new Node("Лист3");
+        Node child3 = new Node("Лист4");
+        root.add(child);
+        root.add(child1);
+        root.add(child2);
+        child1.add(child3);
+        String s=root.print(root,0);
+        assertEquals("Корень\n Лист1\n Лист2\n  Лист4\n Лист3\n",s);
+    }
+    @Test
+    void printFile() throws IOException {
+        Node root=new Node("Корень");
+        Node child = new Node("Лист1");
+        Node child1 = new Node("Лист2");
+        Node child2 = new Node("Лист3");
+        Node child3 = new Node("Лист4");
+        root.add(child);
+        root.add(child1);
+        root.add(child2);
+        child1.add(child3);
+        root.printFile();
+        String s=root.print(root,0);
+        String path = "file.txt";
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
+        String content = new String (bytes);
+        assertEquals(content,s);
     }
 }

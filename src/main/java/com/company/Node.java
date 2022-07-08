@@ -1,5 +1,9 @@
 package com.company;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -58,6 +62,20 @@ public class Node {
                 child.get(i).setName(newName);
                 System.out.print("zdec");
             }
+    }
+    public String print(Node node,int n){
+        String result=node.getName();
+        for(int i=0;i<n;i++)
+            result=' '+result ;
+        result=result+'\n';
+        for(int i=0;i<node.getChildren().size();i++)
+           result=result+print(node.getChildren().get(i),n+1);
+        return result;
+    }
+    public void printFile() throws IOException {
+        String content = print(this,0);
+        String path = "file.txt";
+        Files.write(Paths.get(path),content.getBytes());
     }
 
 }
