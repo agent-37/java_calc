@@ -78,4 +78,15 @@ public class Node {
         Files.write(Paths.get(path),content.getBytes());
     }
 
+    public String printToHtml(){
+        String  result="<li>"+name+"</li>";
+        if(child.size()!=0){
+            result+="<vi>";
+            for(int i=0;i<child.size();i++)
+                result+=child.get(i).printToHtml();
+            result+="</vi>";
+        }
+        //result+="</li>";
+        return result;
+    }
 }
