@@ -165,39 +165,17 @@ public class ListPresentationController {
                 "</html>";
     }
     @GET
-    @Path("test_tree")
+    @Path("nested_tree")
     @Produces("text/html")
     public String getTree() {
         return "<html>" +
                 "  <head>" +
-                "    <title>Вывод дерева</title>" +
+                "    <title>Print Tree</title>" +
                 "  </head>" +
                 "  <body>" +
-                "    <h1>Вывод дерева</h1>" +
-
-                root.printToHtml()+
-
+                "    <h1>Print Tree</h1>" +
+                tree.printToHtml() +
                 "  </body>" +
                 "</html>";
     }
-    @Override
-	public String toString() {
-		return toString(root, 0);
-	}
-
-	private String toHtml(Node pos) {
-		if (pos == null) return "";
-		StringBuilder answer = new StringBuilder();
-		answer.append("<li>").append(pos.name);
-		if (pos.children == null) return answer.append("</li>").toString();
-		answer.append("<ul>");
-		for (Node child : pos.children)
-			answer.append(toHtml(child));
-		answer.append("</ul>");
-		return answer.append("</li>").toString();
-	}
-
-	public String printToHtml() {
-		return "<ul>" + toHtml(root) + "</ul>";
-	}
 }
