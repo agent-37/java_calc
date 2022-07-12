@@ -79,14 +79,14 @@ public class Node {
     }
 
     public String printToHtml(){
-        String  result="<li>"+name+"</li>";
+        String  result="<ul>"+name;
         if(child.size()!=0){
             result+="<vi>";
             for(int i=0;i<child.size();i++)
                 result+=child.get(i).printToHtml();
             result+="</vi>";
         }
-        //result+="</li>";
+        result+="</ul>";
         return result;
     }
     
