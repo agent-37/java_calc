@@ -23,8 +23,13 @@ public class ListPresentationController {
     private Node node1 = new Node("Лист1");
     private Node node3 = new Node("Лист2");
     private Node node4 = new Node("Лист3");
+    private Node current = new Node("Лист");
+    private int t = 7;
+    private int pos = 0;
+
     /**
      * Запоминает список, с которым будет работать.
+     *
      * @param list список, с которым будет работать контроллер.
      */
     public ListPresentationController(List<String> list) {
@@ -35,6 +40,7 @@ public class ListPresentationController {
         node0.add(node1);
         root.add(node4);
         node4.add(node3);
+        current = root;
     }
 
     /**
@@ -49,6 +55,7 @@ public class ListPresentationController {
 
     /**
      * Выводит HTML-страницу со списком, ссылками на страницы редактирования и копкой добавления записи.
+     *
      * @return HTML-страница со списком.
      */
     @GET
@@ -57,12 +64,12 @@ public class ListPresentationController {
     public String getList() {
         String result =
                 "<html>" +
-                "  <head>" +
-                "    <title>Вывод списка</title>" +
-                "  </head>" +
-                "  <body>" +
-                "    <h1>Список</h1>" +
-                "    <ul>";
+                        "  <head>" +
+                        "    <title>Вывод списка</title>" +
+                        "  </head>" +
+                        "  <body>" +
+                        "    <h1>Список</h1>" +
+                        "    <ul>";
         for (int i = 0; i < list.size(); i++) {
             String listItem = list.get(i);
             result += "<li>" + listItem + " <a href=\"edit/" + i + "\">Редактировать</a> </li>";
@@ -80,6 +87,7 @@ public class ListPresentationController {
     /**
      * Пример обработки POST запроса.
      * Добавляет одну случайную запись в список и перенаправляет пользователя на основную страницу со списком.
+     *
      * @return перенаправление на основную страницу со списком.
      */
     @POST
@@ -94,8 +102,101 @@ public class ListPresentationController {
         }
     }
 
+    @POST
+    @Path("up")
+    @Produces("text/html")
+    public Response up() {
+        pos++;
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+    }
+
+    @POST
+    @Path("down")
+    @Produces("text/html")
+    public Response down() {
+        pos--;
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+    }
+    @POST
+    @Path("choose")
+    @Produces("text/html")
+    public Response choose() {
+        if(current.getChildren().size()!=0) {
+            if (pos < 0)
+                current = current.getChildren().get(0);
+            else if (pos >= current.getChildren().size())
+                current = current.getChildren().get(current.getChildren().size() - 1);
+            else
+                current = current.getChildren().get(pos);
+            pos=0;
+        }
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+
+    }
+    @POST
+    @Path("build")
+    @Produces("text/html")
+    public Response build() {
+        Node n =new Node("Лист"+String.valueOf(t));
+        t++;
+        pos=0;
+        current.add(n);
+        current=root;
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+    }
+    @POST
+    @Path("ret")
+    @Produces("text/html")
+    public Response ret() {
+        pos=0;
+        current=root;
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+    }
+    @POST
+    @Path("delete")
+    @Produces("text/html")
+    public Response delete() {
+        String s;
+        if(current.getChildren().size()!=0) {
+            if (pos < 0)
+                s=current.getChildren().get(0).getName();
+            else if (pos >= current.getChildren().size())
+                s=current.getChildren().get(current.getChildren().size() - 1).getName();
+            else
+                s=current.getChildren().get(pos).getId();
+            current.del_child_id(s);
+        }
+        pos=0;
+        current=root;
+        try {
+            return Response.seeOther(new URI("/test_tree")).build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Ошибка построения URI для перенаправления");
+        }
+    }
     /**
      * Выводит страничку для редактирования одного элемента.
+     *
      * @param itemId индекс элемента списка.
      * @return страничка для редактирования одного элемента.
      */
@@ -113,17 +214,18 @@ public class ListPresentationController {
                         "    <h1>Редактирование элемента списка</h1>" +
                         "    <form method=\"post\" action=\"/edit/" + itemId + "\">" +
                         "      <p>Значение</p>" +
-                        "      <input type=\"text\" name=\"value\" value=\"" + listItem +"\"/>" +
+                        "      <input type=\"text\" name=\"value\" value=\"" + listItem + "\"/>" +
                         "      <input type=\"submit\"/>";
         result +=
                 "            </form>" +
-                "  </body>" +
-                "</html>";
+                        "  </body>" +
+                        "</html>";
         return result;
     }
 
     /**
      * Редактирует элемент списка на основе полученных данных.
+     *
      * @param itemId индекс элемента списка.
      * @return перенаправление на основную страницу со списком.
      */
@@ -164,8 +266,9 @@ public class ListPresentationController {
                 "  </body>" +
                 "</html>";
     }
+
     @GET
-    @Path("nested_tree")
+    @Path("test_tree")
     @Produces("text/html")
     public String getTree() {
         return "<html>" +
@@ -174,7 +277,25 @@ public class ListPresentationController {
                 "  </head>" +
                 "  <body>" +
                 "    <h1>Print Tree</h1>" +
-                tree.printToHtml() +
+                root.printToHtml() +
+                "      <form method=\"post\" action=\"down\">" +
+                "        <input type=\"submit\" value=\"up\"/>" +
+                "      </form>" +
+                "      <form method=\"post\" action=\"up\">" +
+                "        <input type=\"submit\" value=\"down\"/>" +
+                "      </form>" +
+                "      <form method=\"post\" action=\"choose\">" +
+                "        <input type=\"submit\" value=\"choose\"/>" +
+                "      </form>" +
+                "      <form method=\"post\" action=\"build\">" +
+                "        <input type=\"submit\" value=\"build\"/>" +
+                "      </form>" +
+                "      <form method=\"post\" action=\"delete\">" +
+                "        <input type=\"submit\" value=\"delete\"/>" +
+                "      </form>" +
+                "      <form method=\"post\" action=\"ret\">" +
+                "        <input type=\"submit\" value=\"return\"/>" +
+                "      </form>" +
                 "  </body>" +
                 "</html>";
     }
